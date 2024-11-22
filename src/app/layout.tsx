@@ -3,6 +3,7 @@ import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
 import localFont from "next/font/local";
 
 import "./globals.css";
+import QCProvider from "@/components/qc-provider";
 import { H2, H4 } from "./components/custom-tags";
 
 const geistSans = localFont({
@@ -32,12 +33,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ClerkProvider>
-          <SignedIn>{children}</SignedIn>
+          <SignedIn>
+            <QCProvider>{children}</QCProvider>
+          </SignedIn>
           <SignedOut>
             <div className="flex flex-col md:flex-row items-center justify-around gap-8 h-screen overflow-y-auto p-8">
               <div className="flex flex-col text-center lg:text-left">
                 <H2>Welcome to Personal Library</H2>
-                <H4>A web app that helps you manage you books</H4>
+                <H4>A web app that helps you manage your books</H4>
               </div>
               <div className="flex items-center justify-center">
                 <SignIn />
