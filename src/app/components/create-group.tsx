@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createGroup } from "@/app/utils/query-functions";
+import { createGroup, updateGroup } from "@/app/utils/query-functions";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -31,37 +31,66 @@ const formSchema = z.object({
 export default function CreateGroup({
   open,
   onOpenChange,
+  groupId,
+  initialName,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  groupId: string;
+  initialName: string;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Group</DialogTitle>
+          <DialogTitle>{groupId ? "Update Group" : "Create Group"}</DialogTitle>
         </DialogHeader>
-        <CreateGroupForm />
+        <CreateGroupForm
+          groupId={groupId}
+          initialName={initialName}
+          onOpenChange={onOpenChange}
+        />
       </DialogContent>
     </Dialog>
   );
 }
 
-function CreateGroupForm() {
+function CreateGroupForm({
+  groupId,
+  initialName,
+  onOpenChange,
+}: {
+  groupId: string;
+  initialName: string;
+  onOpenChange: (open: boolean) => void;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: initialName,
+    },
   });
   const queryClient = useQueryClient();
 
   const { user } = useUser();
   const { toast } = useToast();
   const { mutate, status } = useMutation<string, AxiosError>({
-    mutationFn: () => createGroup(user!.id, form.getValues("name")),
+    mutationFn: () => {
+      if (groupId) {
+        return updateGroup(user!.id, groupId, form.getValues("name"));
+      } else {
+        return createGroup(user!.id, form.getValues("name"));
+      }
+    },
     onSuccess: (message) => {
       form.reset({ name: "" });
       queryClient.invalidateQueries({
         queryKey: ["groups"],
       });
+
+      if (groupId) {
+        onOpenChange(false);
+      }
 
       toast({
         description: message,
@@ -93,7 +122,7 @@ function CreateGroupForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} disabled={status === "pending"} />
               </FormControl>
               <FormMessage />
             </FormItem>

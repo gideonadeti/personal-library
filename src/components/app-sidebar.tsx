@@ -52,6 +52,20 @@ export function AppSidebar() {
   const personalGroups = groups?.filter((group) => !group.default) || [];
 
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
+  const [updateGroupId, setUpdateGroupId] = useState("");
+  const [initialName, setInitialName] = useState("");
+
+  function handleUpdateGroup(id: string, name: string) {
+    setUpdateGroupId(id);
+    setInitialName(name);
+    setOpenCreateGroup(true);
+  }
+
+  function handleCreateGroup() {
+    setUpdateGroupId("");
+    setInitialName("");
+    setOpenCreateGroup(true);
+  }
 
   return (
     <Sidebar>
@@ -86,10 +100,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          <SidebarGroupAction
-            title="Add Group"
-            onClick={() => setOpenCreateGroup(true)}
-          >
+          <SidebarGroupAction title="Add Group" onClick={handleCreateGroup}>
             <Plus />
           </SidebarGroupAction>
           <SidebarGroupContent>
@@ -116,8 +127,12 @@ export function AppSidebar() {
                         </SidebarMenuAction>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem>
-                          <span>Edit</span>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleUpdateGroup(group.id, group.name)
+                          }
+                        >
+                          <span>Update</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <span>Delete</span>
@@ -132,7 +147,12 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <CreateGroup open={openCreateGroup} onOpenChange={setOpenCreateGroup} />
+        <CreateGroup
+          open={openCreateGroup}
+          onOpenChange={setOpenCreateGroup}
+          groupId={updateGroupId}
+          initialName={initialName}
+        />
       </SidebarFooter>
     </Sidebar>
   );

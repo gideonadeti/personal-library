@@ -28,3 +28,22 @@ export async function createGroup(userId: string, name: string) {
     throw err;
   }
 }
+
+export async function updateGroup(
+  userId: string,
+  groupId: string,
+  name: string
+) {
+  try {
+    const res = await axios.put(`/groups/${groupId}`, {
+      userId,
+      name,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error updating group:", err);
+
+    throw err;
+  }
+}
