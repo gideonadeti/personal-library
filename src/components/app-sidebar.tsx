@@ -2,8 +2,21 @@
 
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import { BookOpen, Bookmark, Book, CheckCircle, User, Tag } from "lucide-react";
+import {
+  User,
+  Tag,
+  Plus,
+  LibraryBig,
+  MoreHorizontal,
+  BookHeart,
+  Library,
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
+import CreateGroup from "@/app/components/create-group";
+import { Group } from "@/app/types";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sidebar,
   SidebarContent,
@@ -13,20 +26,32 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarGroupAction,
+  SidebarFooter,
+  SidebarMenuAction,
 } from "./ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const defaultGroups = [
-  { name: "All Books", href: "/groups/all-books", icon: BookOpen },
-  { name: "Unread", href: "/groups/unread", icon: Bookmark },
-  { name: "Reading", href: "/groups/reading", icon: Book },
-  { name: "Read", href: "/groups/read", icon: CheckCircle },
+  { name: "All Books", href: "/groups/all-books", icon: LibraryBig },
+  { name: "Favorites", href: "/groups/favorites", icon: BookHeart },
   { name: "Authors", href: "/authors", icon: User },
   { name: "Genres", href: "/genres", icon: Tag },
 ];
 
 export function AppSidebar() {
   const { groupId } = useParams<{ groupId: string }>();
+  const { status, data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
+
   const pathname = usePathname();
+  const personalGroups = groups?.filter((group) => !group.default) || [];
+
+  const [openCreateGroup, setOpenCreateGroup] = useState(false);
 
   return (
     <Sidebar>
@@ -59,7 +84,56 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
+          <SidebarGroupAction
+            title="Add Group"
+            onClick={() => setOpenCreateGroup(true)}
+          >
+            <Plus />
+          </SidebarGroupAction>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {status === "pending" ? (
+                <SidebarMenuItem>
+                  <Skeleton className="h-8 w-full rounded-md" />
+                </SidebarMenuItem>
+              ) : (
+                personalGroups.map((group) => (
+                  <SidebarMenuItem key={group.id}>
+                    <SidebarMenuButton asChild isActive={groupId === group.id}>
+                      <Link href={`/groups/${group.id}`}>
+                        <Library />
+                        <span>{group.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuAction showOnHover>
+                          <MoreHorizontal />
+                          <span className="sr-only">More</span>
+                        </SidebarMenuAction>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem>
+                          <span>Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <span>Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </SidebarMenuItem>
+                ))
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <CreateGroup open={openCreateGroup} onOpenChange={setOpenCreateGroup} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

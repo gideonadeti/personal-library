@@ -7,9 +7,24 @@ export async function readGroups(userId: string) {
     });
 
     return response.data.groups;
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error("Error reading groups:", err);
 
-    throw error;
+    throw err;
+  }
+}
+
+export async function createGroup(userId: string, name: string) {
+  try {
+    const res = await axios.post(`/groups`, {
+      userId,
+      name,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error creating group:", err);
+
+    throw err;
   }
 }
