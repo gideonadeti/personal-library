@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import QCProvider from "@/components/qc-provider";
 import { H2, H4 } from "./components/custom-tags";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,7 +35,10 @@ export default function RootLayout({
       >
         <ClerkProvider>
           <SignedIn>
-            <QCProvider>{children}</QCProvider>
+            <QCProvider>
+              {children}
+              <Toaster />
+            </QCProvider>
           </SignedIn>
           <SignedOut>
             <div className="flex flex-col md:flex-row items-center justify-around gap-8 h-screen overflow-y-auto p-8">
