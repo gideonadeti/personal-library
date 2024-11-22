@@ -47,3 +47,17 @@ export async function updateGroup(
     throw err;
   }
 }
+
+export async function deleteGroup(userId: string, groupId: string) {
+  try {
+    const res = await axios.delete(`/groups/${groupId}`, {
+      params: { userId },
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error deleting group:", err);
+
+    throw err;
+  }
+}
