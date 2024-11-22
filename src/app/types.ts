@@ -19,4 +19,5 @@ export interface Group {
   id: string;
   name: string;
   books: Book[];
+  default: boolean;
 }
