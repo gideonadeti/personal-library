@@ -28,3 +28,10 @@ export interface Author {
   description: string;
   books: Book[];
 }
+
+export interface Genre {
+  id: string;
+  name: string;
+  description: string;
+  books: Book[];
+}

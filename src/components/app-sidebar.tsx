@@ -18,7 +18,7 @@ import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
 import CreateAuthor from "@/app/components/create-author";
 import CreateGenre from "@/app/components/create-genre";
-import { Group, Author } from "@/app/types";
+import { Group, Author, Genre } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
 import {
@@ -53,6 +53,7 @@ export function AppSidebar() {
   const { groupId } = useParams<{ groupId: string }>();
   const { status, data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
   const { data: authors } = useQuery<Author[]>({ queryKey: ["authors"] });
+  const { data: genres } = useQuery<Genre[]>({ queryKey: ["genres"] });
 
   const pathname = usePathname();
   const personalGroups = groups?.filter((group) => !group.default) || [];
@@ -112,6 +113,7 @@ export function AppSidebar() {
                       <>
                         <SidebarMenuBadge className="me-5">
                           {defaultGroup.name === "Authors" && authors?.length}
+                          {defaultGroup.name === "Genres" && genres?.length}
                         </SidebarMenuBadge>
                         <SidebarMenuAction
                           showOnHover
