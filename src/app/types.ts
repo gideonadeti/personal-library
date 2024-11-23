@@ -21,3 +21,10 @@ export interface Group {
   books: Book[];
   default: boolean;
 }
+
+export interface Author {
+  id: string;
+  name: string;
+  description: string;
+  books: Book[];
+}

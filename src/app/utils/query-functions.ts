@@ -61,3 +61,17 @@ export async function deleteGroup(userId: string, groupId: string) {
     throw err;
   }
 }
+
+export async function readAuthors(userId: string) {
+  try {
+    const response = await axios.get("/authors", {
+      params: { userId },
+    });
+
+    return response.data.authors;
+  } catch (err) {
+    console.error("Error reading authors:", err);
+
+    throw err;
+  } 
+}

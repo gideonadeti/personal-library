@@ -101,6 +101,15 @@ export function AppSidebar() {
                         <span>{defaultGroup.name}</span>
                       </Link>
                     </SidebarMenuButton>
+                    {(defaultGroup.name === "Authors" ||
+                      defaultGroup.name === "Genres") && (
+                      <SidebarMenuAction
+                        showOnHover
+                        title={`Create ${defaultGroup.name.slice(0, -1)}`}
+                      >
+                        <Plus />
+                      </SidebarMenuAction>
+                    )}
                   </SidebarMenuItem>
                 );
               })}
@@ -109,7 +118,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Group" onClick={handleCreateGroup}>
+          <SidebarGroupAction title="Create Group" onClick={handleCreateGroup}>
             <Plus />
           </SidebarGroupAction>
           <SidebarGroupContent>
