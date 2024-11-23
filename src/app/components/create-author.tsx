@@ -118,7 +118,12 @@ function CreateAuthorForm() {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea className="resize-none" rows={3} {...field} />
+                <Textarea
+                  className="resize-none"
+                  rows={3}
+                  {...field}
+                  disabled={status === "pending"}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
