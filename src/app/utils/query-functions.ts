@@ -109,3 +109,23 @@ export async function readGenres(userId: string) {
     throw err;
   }
 }
+
+export async function createGenre(
+  userId: string,
+  name: string,
+  description: string
+) {
+  try {
+    const res = await axios.post(`/genres`, {
+      userId,
+      name,
+      description,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error creating genre:", err);
+
+    throw err;
+  }
+}

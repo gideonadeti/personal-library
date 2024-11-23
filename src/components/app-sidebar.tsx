@@ -17,6 +17,7 @@ import { useState } from "react";
 import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
 import CreateAuthor from "@/app/components/create-author";
+import CreateGenre from "@/app/components/create-genre";
 import { Group, Author } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
@@ -59,6 +60,7 @@ export function AppSidebar() {
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
   const [openCreateAuthor, setOpenCreateAuthor] = useState(false);
+  const [openCreateGenre, setOpenCreateGenre] = useState(false);
   const [updateGroupId, setUpdateGroupId] = useState("");
   const [deleteGroupId, setDeleteGroupId] = useState("");
   const [initialName, setInitialName] = useState("");
@@ -117,6 +119,8 @@ export function AppSidebar() {
                           onClick={() => {
                             if (defaultGroup.name === "Authors") {
                               setOpenCreateAuthor(true);
+                            } else if (defaultGroup.name === "Genres") {
+                              setOpenCreateGenre(true);
                             }
                           }}
                         >
@@ -199,6 +203,7 @@ export function AppSidebar() {
           open={openCreateAuthor}
           onOpenChange={setOpenCreateAuthor}
         />
+        <CreateGenre open={openCreateGenre} onOpenChange={setOpenCreateGenre} />
       </SidebarFooter>
     </Sidebar>
   );
