@@ -73,5 +73,25 @@ export async function readAuthors(userId: string) {
     console.error("Error reading authors:", err);
 
     throw err;
-  } 
+  }
+}
+
+export async function createAuthor(
+  userId: string,
+  name: string,
+  description: string
+) {
+  try {
+    const res = await axios.post(`/authors`, {
+      userId,
+      name,
+      description,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error creating author:", err);
+
+    throw err;
+  }
 }

@@ -16,6 +16,7 @@ import { useState } from "react";
 
 import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
+import CreateAuthor from "@/app/components/create-author";
 import { Group } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
@@ -55,6 +56,7 @@ export function AppSidebar() {
 
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
+  const [openCreateAuthor, setOpenCreateAuthor] = useState(false);
   const [updateGroupId, setUpdateGroupId] = useState("");
   const [deleteGroupId, setDeleteGroupId] = useState("");
   const [initialName, setInitialName] = useState("");
@@ -106,6 +108,11 @@ export function AppSidebar() {
                       <SidebarMenuAction
                         showOnHover
                         title={`Create ${defaultGroup.name.slice(0, -1)}`}
+                        onClick={() => {
+                          if (defaultGroup.name === "Authors") {
+                            setOpenCreateAuthor(true);
+                          }
+                        }}
                       >
                         <Plus />
                       </SidebarMenuAction>
@@ -180,6 +187,10 @@ export function AppSidebar() {
           open={openDeleteGroup}
           onOpenChange={setOpenDeleteGroup}
           groupId={deleteGroupId}
+        />
+        <CreateAuthor
+          open={openCreateAuthor}
+          onOpenChange={setOpenCreateAuthor}
         />
       </SidebarFooter>
     </Sidebar>
