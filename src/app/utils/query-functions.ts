@@ -95,3 +95,17 @@ export async function createAuthor(
     throw err;
   }
 }
+
+export async function readGenres(userId: string) {
+  try {
+    const response = await axios.get("/genres", {
+      params: { userId },
+    });
+
+    return response.data.genres;
+  } catch (err) {
+    console.error("Error reading genres:", err);
+
+    throw err;
+  }
+}

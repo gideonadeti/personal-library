@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
-import { readGroups, readAuthors } from "@/app/utils/query-functions";
+import { readGroups, readAuthors, readGenres } from "@/app/utils/query-functions";
 import { Group, Author } from "@/app/types";
 
 export default function Page() {
@@ -28,12 +28,24 @@ export default function Page() {
     queryKey: ["authors"],
     queryFn: () => readAuthors(user!.id),
   });
+  const { status: genresStatus, error: genresError } = useQuery<
+    Author[],
+    AxiosError
+  >({
+    queryKey: ["genres"],
+    queryFn: () => readGenres(user!.id),
+  });
 
   useEffect(() => {
-    if (groupsStatus === "error" || authorsStatus === "error") {
+    if (
+      groupsStatus === "error" ||
+      authorsStatus === "error" ||
+      genresStatus === "error"
+    ) {
       const errorMessage =
         (groupsError?.response?.data as { errMsg: string })?.errMsg ||
         (authorsError?.response?.data as { errMsg: string })?.errMsg ||
+        (genresError?.response?.data as { errMsg: string })?.errMsg ||
         "Something went wrong";
 
       toast({
@@ -41,7 +53,15 @@ export default function Page() {
         variant: "destructive",
       });
     }
-  }, [groupsError, groupsStatus, authorsError, authorsStatus, toast]);
+  }, [
+    groupsError,
+    groupsStatus,
+    authorsError,
+    authorsStatus,
+    genresError,
+    genresStatus,
+    toast,
+  ]);
 
   return <div>{groups?.length}</div>;
 }
