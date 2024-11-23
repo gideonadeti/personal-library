@@ -18,6 +18,7 @@ import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
 import { Group } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ThemeToggler } from "./theme-toggler";
 import {
   Sidebar,
   SidebarContent,
@@ -157,6 +158,9 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <SidebarGroup className="flex flex-row items-center justify-between">
+          <ThemeToggler />
+        </SidebarGroup>
         <CreateGroup
           open={openCreateGroup}
           onOpenChange={setOpenCreateGroup}
