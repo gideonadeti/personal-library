@@ -17,7 +17,7 @@ import { useState } from "react";
 import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
 import CreateAuthor from "@/app/components/create-author";
-import { Group } from "@/app/types";
+import { Group, Author } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
 import {
@@ -32,6 +32,7 @@ import {
   SidebarGroupAction,
   SidebarFooter,
   SidebarMenuAction,
+  SidebarMenuBadge,
 } from "./ui/sidebar";
 import {
   DropdownMenu,
@@ -50,6 +51,7 @@ const defaultGroups = [
 export function AppSidebar() {
   const { groupId } = useParams<{ groupId: string }>();
   const { status, data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
+  const { data: authors } = useQuery<Author[]>({ queryKey: ["authors"] });
 
   const pathname = usePathname();
   const personalGroups = groups?.filter((group) => !group.default) || [];
@@ -105,17 +107,22 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                     {(defaultGroup.name === "Authors" ||
                       defaultGroup.name === "Genres") && (
-                      <SidebarMenuAction
-                        showOnHover
-                        title={`Create ${defaultGroup.name.slice(0, -1)}`}
-                        onClick={() => {
-                          if (defaultGroup.name === "Authors") {
-                            setOpenCreateAuthor(true);
-                          }
-                        }}
-                      >
-                        <Plus />
-                      </SidebarMenuAction>
+                      <>
+                        <SidebarMenuBadge className="me-5">
+                          {defaultGroup.name === "Authors" && authors?.length}
+                        </SidebarMenuBadge>
+                        <SidebarMenuAction
+                          showOnHover
+                          title={`Create ${defaultGroup.name.slice(0, -1)}`}
+                          onClick={() => {
+                            if (defaultGroup.name === "Authors") {
+                              setOpenCreateAuthor(true);
+                            }
+                          }}
+                        >
+                          <Plus />
+                        </SidebarMenuAction>
+                      </>
                     )}
                   </SidebarMenuItem>
                 );
