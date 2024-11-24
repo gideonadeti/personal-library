@@ -129,3 +129,17 @@ export async function createGenre(
     throw err;
   }
 }
+
+export async function readBooks(userId: string) {
+  try {
+    const response = await axios.get("/books", {
+      params: { userId },
+    });
+
+    return response.data.books;
+  } catch (err) {
+    console.error("Error reading books:", err);
+
+    throw err;
+  }
+}
