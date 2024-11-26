@@ -40,6 +40,17 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         >
           Update
         </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            console.log(
+              `${book.favorite ? "Un-marking" : "Marking"} ${
+                book.title
+              } as favorite...`
+            )
+          }
+        >
+          {book.favorite ? "Un-mark as favorite" : "Mark as favorite"}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => console.log("Deleting...", book.title)}
