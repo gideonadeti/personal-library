@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { Star } from "lucide-react";
 
 import ColumnHeader from "./column-header";
 import RowActions from "./row-actions";
@@ -11,6 +12,18 @@ export const columns: ColumnDef<Book>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => <ColumnHeader column={column} title="Title" />,
+    cell: ({ row }) => {
+      const book = row.original;
+
+      return (
+        <div className="flex items-center">
+          <span>
+            {book.favorite && <Star className="text-yellow-500 w-4 h-4 mr-1" />}
+          </span>
+          <span>{book.title}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",
