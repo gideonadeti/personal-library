@@ -82,7 +82,7 @@ export default function Page() {
   ]);
 
   return (
-    <div>
+    <div className="flex flex-col">
       <span>{groups?.length} groups</span>
       <span>{books?.length} books</span>
     </div>
