@@ -143,3 +143,29 @@ export async function readBooks(userId: string) {
     throw err;
   }
 }
+
+export async function createBook(
+  userId: string,
+  title: string,
+  description: string,
+  groupId: string,
+  authorId: string,
+  genreIds: string[]
+) {
+  try {
+    const res = await axios.post(`/books`, {
+      userId,
+      title,
+      description,
+      groupId,
+      authorId,
+      genreIds,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error creating book:", err);
+
+    throw err;
+  }
+}
