@@ -18,9 +18,11 @@ import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
 import CreateAuthor from "@/app/components/create-author";
 import CreateGenre from "@/app/components/create-genre";
+import CreateBook from "@/app/components/create-book";
 import { Group, Author, Genre } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
+import { Button } from "./ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -59,9 +61,10 @@ export function AppSidebar() {
   const personalGroups = groups?.filter((group) => !group.default) || [];
 
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
-  const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
   const [openCreateAuthor, setOpenCreateAuthor] = useState(false);
   const [openCreateGenre, setOpenCreateGenre] = useState(false);
+  const [openCreateBook, setOpenCreateBook] = useState(false);
+  const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
   const [updateGroupId, setUpdateGroupId] = useState("");
   const [deleteGroupId, setDeleteGroupId] = useState("");
   const [initialName, setInitialName] = useState("");
@@ -112,8 +115,14 @@ export function AppSidebar() {
                       defaultGroup.name === "Genres") && (
                       <>
                         <SidebarMenuBadge className="me-5">
-                          {defaultGroup.name === "Authors" && authors?.length}
-                          {defaultGroup.name === "Genres" && genres?.length}
+                          {defaultGroup.name === "Authors" &&
+                            authors &&
+                            authors.length > 0 &&
+                            authors.length}
+                          {defaultGroup.name === "Genres" &&
+                            genres &&
+                            genres.length > 0 &&
+                            genres.length}
                         </SidebarMenuBadge>
                         <SidebarMenuAction
                           showOnHover
@@ -187,8 +196,15 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarGroup className="flex flex-row items-center justify-between">
+        <SidebarGroup className="flex flex-row items-center justify-between space-x-4">
           <ThemeToggler />
+          <Button
+            variant="outline"
+            onClick={() => setOpenCreateBook(true)}
+            className="w-full"
+          >
+            Create Book
+          </Button>
         </SidebarGroup>
         <CreateGroup
           open={openCreateGroup}
@@ -206,6 +222,7 @@ export function AppSidebar() {
           onOpenChange={setOpenCreateAuthor}
         />
         <CreateGenre open={openCreateGenre} onOpenChange={setOpenCreateGenre} />
+        <CreateBook open={openCreateBook} onOpenChange={setOpenCreateBook} />
       </SidebarFooter>
     </Sidebar>
   );
