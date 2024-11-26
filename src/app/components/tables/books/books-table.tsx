@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Pagination from "./pagination";
+import Pagination from "../pagination";
 import Toolbar from "./toolbar";
 
 interface BooksTableProps<TData, TValue> {

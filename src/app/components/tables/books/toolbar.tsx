@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ViewOptions from "./view-options";
+import ViewOptions from "../view-options";
 import FacetedFilter from "./faceted-filter";
 
 interface ToolbarProps<TData> {
