@@ -12,9 +12,7 @@ interface ToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export default function Toolbar<TData>({
-  table,
-}: ToolbarProps<TData>) {
+export default function Toolbar<TData>({ table }: ToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -28,13 +26,14 @@ export default function Toolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("type") && (
+        {table.getColumn("status") && (
           <FacetedFilter
-            column={table.getColumn("type")}
-            title="Type"
+            column={table.getColumn("status")}
+            title="Status"
             options={[
-              { value: "countdown", label: "Countdown" },
-              { value: "countUp", label: "Count Up" },
+              { value: "unread", label: "Unread" },
+              { value: "reading", label: "Reading" },
+              { value: "read", label: "Read" },
             ]}
           />
         )}
