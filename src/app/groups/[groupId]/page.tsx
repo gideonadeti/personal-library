@@ -5,10 +5,12 @@ import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
+import { useParams } from "next/navigation";
 
 import BooksTable from "@/app/components/books-table/books-table";
 import { columns } from "@/app/components/books-table/columns";
 import { Group, Author, Genre, Book } from "@/app/types";
+import { Spinner } from "@/components/ui/spinner";
 import {
   readGroups,
   readAuthors,
@@ -19,6 +21,7 @@ import {
 export default function Page() {
   const { user } = useUser();
   const { toast } = useToast();
+  const { groupId } = useParams();
 
   const { status: groupsStatus, error: groupsError } = useQuery<
     Group[],
@@ -84,8 +87,19 @@ export default function Page() {
 
   return (
     <div className="px-8 py-4">
+      {(groupsStatus === "pending" ||
+        authorsStatus === "pending" ||
+        genresStatus === "pending" ||
+        booksStatus === "pending") && <Spinner />}
       {books && books.length > 0 && (
-        <BooksTable columns={columns} data={books} />
+        <BooksTable
+          columns={columns}
+          data={
+            groupId === "favorites"
+              ? books.filter((book) => book.favorite)
+              : books
+          }
+        />
       )}
     </div>
   );
