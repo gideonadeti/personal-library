@@ -6,23 +6,24 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
+import BooksTable from "@/app/components/books-table/books-table";
+import { columns } from "@/app/components/books-table/columns";
+import { Group, Author, Genre, Book } from "@/app/types";
 import {
   readGroups,
   readAuthors,
   readGenres,
   readBooks,
 } from "@/app/utils/query-functions";
-import { Group, Author, Genre, Book } from "@/app/types";
 
 export default function Page() {
   const { user } = useUser();
   const { toast } = useToast();
 
-  const {
-    status: groupsStatus,
-    data: groups,
-    error: groupsError,
-  } = useQuery<Group[], AxiosError>({
+  const { status: groupsStatus, error: groupsError } = useQuery<
+    Group[],
+    AxiosError
+  >({
     queryKey: ["groups"],
     queryFn: () => readGroups(user!.id),
   });
@@ -82,9 +83,10 @@ export default function Page() {
   ]);
 
   return (
-    <div className="flex flex-col">
-      <span>{groups?.length} groups</span>
-      <span>{books?.length} books</span>
+    <div className="px-8 py-4">
+      {books && books.length > 0 && (
+        <BooksTable columns={columns} data={books} />
+      )}
     </div>
   );
 }

@@ -10,6 +10,9 @@ export interface Book {
   authorId: string;
   genreId: string;
   title: string;
+  description: string;
+  author: Author;
+  genres: Genre[];
   status: "unread" | "reading" | "read";
   favorite: boolean;
   notes: Note[];
