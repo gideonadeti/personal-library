@@ -7,8 +7,8 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
 
-import BooksTable from "@/app/components/tables/books-table/books-table";
-import { columns } from "@/app/components/tables/books-table/columns";
+import BooksTable from "@/app/components/tables/books/books-table";
+import { columns } from "@/app/components/tables/books/columns";
 import { Group, Author, Genre, Book } from "@/app/types";
 import { Spinner } from "@/components/ui/spinner";
 import {
