@@ -58,12 +58,8 @@ export const columns: ColumnDef<Book>[] = [
       const book = row.original;
 
       return (
-        <span className="space-x-2">
-          {book.genres.map((genre) => (
-            <Badge key={genre.id} variant="outline" className="rounded-full">
-              {genre.name.toLowerCase()}
-            </Badge>
-          ))}
+        <span>
+          {book.genres.map((genre) => genre.name.toLowerCase()).join(", ")}
         </span>
       );
     },
@@ -71,6 +67,31 @@ export const columns: ColumnDef<Book>[] = [
   {
     accessorKey: "status",
     header: ({ column }) => <ColumnHeader column={column} title="Status" />,
+    cell: ({ row }) => {
+      const book = row.original;
+
+      function getColor(status: string) {
+        switch (status) {
+          case "unread":
+            return "bg-red-500";
+          case "reading":
+            return "bg-yellow-500";
+          case "read":
+            return "bg-green-500";
+          default:
+            return "bg-gray-500";
+        }
+      }
+
+      return (
+        <Badge
+          variant="outline"
+          className={`rounded-full ${getColor(book.status)}`}
+        >
+          {book.status}
+        </Badge>
+      );
+    },
   },
   {
     id: "actions",
