@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Star } from "lucide-react";
 
-import ColumnHeader from "./column-header";
+import ColumnHeader from "../column-header";
 import RowActions from "./row-actions";
 import { Book } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
