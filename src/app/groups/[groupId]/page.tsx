@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 
 import BooksTable from "@/app/components/tables/books/books-table";
@@ -23,10 +23,11 @@ export default function Page() {
   const { toast } = useToast();
   const { groupId } = useParams();
 
-  const { status: groupsStatus, error: groupsError } = useQuery<
-    Group[],
-    AxiosError
-  >({
+  const {
+    status: groupsStatus,
+    data: groups,
+    error: groupsError,
+  } = useQuery<Group[], AxiosError>({
     queryKey: ["groups"],
     queryFn: () => readGroups(user!.id),
   });
@@ -85,22 +86,32 @@ export default function Page() {
     toast,
   ]);
 
+  const filteredBooks = useMemo(() => {
+    if (!books?.length) return [];
+
+    switch (groupId) {
+      case "all-books": {
+        const allBooksGroup = groups?.find((group) => group.default);
+        return books.filter((book) => book.groupId === allBooksGroup?.id);
+      }
+
+      case "favorites": {
+        return books.filter((book) => book.favorite);
+      }
+
+      default: {
+        return books.filter((book) => book.groupId === groupId);
+      }
+    }
+  }, [books, groups, groupId]);
+
   return (
     <div className="px-8 py-4">
       {(groupsStatus === "pending" ||
         authorsStatus === "pending" ||
         genresStatus === "pending" ||
         booksStatus === "pending") && <Spinner />}
-      {books && books.length > 0 && (
-        <BooksTable
-          columns={columns}
-          data={
-            groupId === "favorites"
-              ? books.filter((book) => book.favorite)
-              : books
-          }
-        />
-      )}
+      {books && <BooksTable columns={columns} data={filteredBooks} />}
     </div>
   );
 }
