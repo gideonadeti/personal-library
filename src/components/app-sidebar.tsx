@@ -19,7 +19,7 @@ import DeleteGroup from "@/app/components/delete-group";
 import CreateAuthor from "@/app/components/create-author";
 import CreateGenre from "@/app/components/create-genre";
 import CreateBook from "@/app/components/create-book";
-import { Group, Author, Genre } from "@/app/types";
+import { Group, Author, Genre, Book } from "@/app/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
 import { Button } from "./ui/button";
@@ -56,6 +56,7 @@ export function AppSidebar() {
   const { status, data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
   const { data: authors } = useQuery<Author[]>({ queryKey: ["authors"] });
   const { data: genres } = useQuery<Genre[]>({ queryKey: ["genres"] });
+  const { data: books } = useQuery<Book[]>({ queryKey: ["books"] });
 
   const pathname = usePathname();
   const personalGroups = groups?.filter((group) => !group.default) || [];
@@ -111,8 +112,8 @@ export function AppSidebar() {
                         <span>{defaultGroup.name}</span>
                       </Link>
                     </SidebarMenuButton>
-                    {(defaultGroup.name === "Authors" ||
-                      defaultGroup.name === "Genres") && (
+                    {defaultGroup.name === "Authors" ||
+                    defaultGroup.name === "Genres" ? (
                       <>
                         <SidebarMenuBadge className="me-5">
                           {defaultGroup.name === "Authors" &&
@@ -138,6 +139,17 @@ export function AppSidebar() {
                           <Plus />
                         </SidebarMenuAction>
                       </>
+                    ) : (
+                      <SidebarMenuBadge>
+                        {defaultGroup.name === "All Books" &&
+                          books &&
+                          books.length > 0 &&
+                          books.length}
+                        {defaultGroup.name === "Favorites" &&
+                          books &&
+                          books.length > 0 &&
+                          books.filter((book) => book.favorite).length}
+                      </SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
                 );
