@@ -114,6 +114,12 @@ function AddTaskForm() {
     onSuccess: (message) => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["authors"] });
+      if (form.getValues("genres").length > 0) {
+        queryClient.invalidateQueries({
+          queryKey: ["genres"],
+        });
+      }
       form.reset(defaultValues);
 
       toast({ description: message });
