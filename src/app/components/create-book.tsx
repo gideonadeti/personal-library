@@ -210,6 +210,7 @@ function AddTaskForm() {
                       className="ms-auto"
                       onClick={() => setOpenCreateAuthor(true)}
                       title="Create author"
+                      type="button"
                     >
                       <Plus className="w-4 h-4" />
                     </Button>
@@ -248,6 +249,7 @@ function AddTaskForm() {
                       className="ms-auto"
                       onClick={() => setOpenCreateGenre(true)}
                       title="Create genre"
+                      type="button"
                     >
                       <Plus className="w-4 h-4" />
                     </Button>
