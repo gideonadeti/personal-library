@@ -142,9 +142,9 @@ export function AppSidebar() {
                     ) : (
                       <SidebarMenuBadge>
                         {defaultGroup.name === "All Books" &&
-                          books &&
-                          books.length > 0 &&
-                          books.length}
+                          groups &&
+                          groups.length > 0 &&
+                          groups.find((group) => group.default)?.books.length}
                         {defaultGroup.name === "Favorites" &&
                           books &&
                           books.length > 0 &&
@@ -177,6 +177,10 @@ export function AppSidebar() {
                         <span>{group.name}</span>
                       </Link>
                     </SidebarMenuButton>
+
+                    <SidebarMenuBadge className="me-5">
+                      {group.books.length > 0 && group.books.length}
+                    </SidebarMenuBadge>
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
