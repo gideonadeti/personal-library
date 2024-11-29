@@ -15,6 +15,7 @@ import { createBook } from "@/app/utils/query-functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   MultiSelector,
   MultiSelectorTrigger,
@@ -49,7 +50,7 @@ const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string(),
   groupId: z.string(),
-  authorId: z.string(),
+  authorId: z.string().min(1, { message: "Author is required" }),
   genres: z.array(z.string()),
 });
 
@@ -92,6 +93,14 @@ function AddTaskForm() {
     genres: [],
   };
 
+  const resetValues = {
+    title: "",
+    description: "",
+    groupId: groups?.find((group) => group.default)?.id || "",
+    authorId: "",
+    genres: [],
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -112,15 +121,16 @@ function AddTaskForm() {
           ) as string[] // Convert selected genres to their ids
       ),
     onSuccess: (message) => {
+      form.reset(resetValues);
       queryClient.invalidateQueries({ queryKey: ["books"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       queryClient.invalidateQueries({ queryKey: ["authors"] });
+
       if (form.getValues("genres").length > 0) {
         queryClient.invalidateQueries({
           queryKey: ["genres"],
         });
       }
-      form.reset(defaultValues);
 
       toast({ description: message });
     },
@@ -262,14 +272,16 @@ function AddTaskForm() {
                   </div>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                      {genres?.map((genre) => (
-                        <MultiSelectorItem
-                          key={genre.id}
-                          value={genre.name.toLowerCase()}
-                        >
-                          <span>{genre.name}</span>
-                        </MultiSelectorItem>
-                      ))}
+                      <ScrollArea className="h-16">
+                        {genres?.map((genre) => (
+                          <MultiSelectorItem
+                            key={genre.id}
+                            value={genre.name.toLowerCase()}
+                          >
+                            <span>{genre.name}</span>
+                          </MultiSelectorItem>
+                        ))}
+                      </ScrollArea>
                     </MultiSelectorList>
                   </MultiSelectorContent>
                 </MultiSelector>
