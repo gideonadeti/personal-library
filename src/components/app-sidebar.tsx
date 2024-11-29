@@ -173,7 +173,7 @@ export function AppSidebar() {
                 personalGroups.map((group) => (
                   <SidebarMenuItem key={group.id}>
                     <SidebarMenuButton asChild isActive={groupId === group.id}>
-                      <Link href={`/groupsQuery.data/${group.id}`}>
+                      <Link href={`/groups/${group.id}`}>
                         <Library />
                         <span>{group.name}</span>
                       </Link>
