@@ -96,12 +96,11 @@ export function AppSidebar() {
                 // Check if groupId matches the group name or if the pathname is one of the special cases
                 const isActive =
                   groupId === defaultGroup.name.toLowerCase() ||
-                  (groupId === "all-booksQuery.data" &&
+                  (groupId === "all-books" &&
                     defaultGroup.name === "All Books") ||
-                  (pathname === "/authorsQuery.data" &&
+                  (pathname === "/authors" &&
                     defaultGroup.name === "Authors") ||
-                  (pathname === "/genresQuery.data" &&
-                    defaultGroup.name === "Genres");
+                  (pathname === "/genres" && defaultGroup.name === "Genres");
 
                 return (
                   <SidebarMenuItem key={defaultGroup.name}>
