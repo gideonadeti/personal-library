@@ -15,7 +15,6 @@ import { createBook } from "@/app/utils/query-functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   MultiSelector,
   MultiSelectorTrigger,
@@ -272,7 +271,6 @@ function AddTaskForm() {
                   </div>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                      <ScrollArea className="h-16">
                         {genres?.map((genre) => (
                           <MultiSelectorItem
                             key={genre.id}
@@ -281,7 +279,6 @@ function AddTaskForm() {
                             <span>{genre.name}</span>
                           </MultiSelectorItem>
                         ))}
-                      </ScrollArea>
                     </MultiSelectorList>
                   </MultiSelectorContent>
                 </MultiSelector>
