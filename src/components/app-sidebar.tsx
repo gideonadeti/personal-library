@@ -11,7 +11,6 @@ import {
   BookHeart,
   Library,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import CreateGroup from "@/app/components/create-group";
@@ -19,7 +18,7 @@ import DeleteGroup from "@/app/components/delete-group";
 import CreateAuthor from "@/app/components/create-author";
 import CreateGenre from "@/app/components/create-genre";
 import CreateBook from "@/app/components/create-book";
-import { Group, Author, Genre, Book } from "@/app/types";
+import useBooksData from "@/app/hooks/use-books-data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThemeToggler } from "./theme-toggler";
 import { Button } from "./ui/button";
@@ -52,14 +51,13 @@ const defaultGroups = [
 ];
 
 export function AppSidebar() {
-  const { groupId } = useParams<{ groupId: string }>();
-  const { status, data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
-  const { data: authors } = useQuery<Author[]>({ queryKey: ["authors"] });
-  const { data: genres } = useQuery<Genre[]>({ queryKey: ["genres"] });
-  const { data: books } = useQuery<Book[]>({ queryKey: ["books"] });
+  const { groupId } = useParams();
+  const { groupsQuery, booksQuery, authorsQuery, genresQuery, isLoading } =
+    useBooksData();
 
   const pathname = usePathname();
-  const personalGroups = groups?.filter((group) => !group.default) || [];
+  const personalGroups =
+    groupsQuery.data?.filter((group) => !group.default) || [];
 
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
   const [openCreateAuthor, setOpenCreateAuthor] = useState(false);
@@ -98,11 +96,12 @@ export function AppSidebar() {
                 // Check if groupId matches the group name or if the pathname is one of the special cases
                 const isActive =
                   groupId === defaultGroup.name.toLowerCase() ||
-                  (groupId === "all-books" &&
+                  (groupId === "all-booksQuery.data" &&
                     defaultGroup.name === "All Books") ||
-                  (pathname === "/authors" &&
+                  (pathname === "/authorsQuery.data" &&
                     defaultGroup.name === "Authors") ||
-                  (pathname === "/genres" && defaultGroup.name === "Genres");
+                  (pathname === "/genresQuery.data" &&
+                    defaultGroup.name === "Genres");
 
                 return (
                   <SidebarMenuItem key={defaultGroup.name}>
@@ -117,13 +116,13 @@ export function AppSidebar() {
                       <>
                         <SidebarMenuBadge className="me-5">
                           {defaultGroup.name === "Authors" &&
-                            authors &&
-                            authors.length > 0 &&
-                            authors.length}
+                            authorsQuery.data &&
+                            authorsQuery.data.length > 0 &&
+                            authorsQuery.data.length}
                           {defaultGroup.name === "Genres" &&
-                            genres &&
-                            genres.length > 0 &&
-                            genres.length}
+                            genresQuery.data &&
+                            genresQuery.data.length > 0 &&
+                            genresQuery.data.length}
                         </SidebarMenuBadge>
                         <SidebarMenuAction
                           showOnHover
@@ -142,13 +141,15 @@ export function AppSidebar() {
                     ) : (
                       <SidebarMenuBadge>
                         {defaultGroup.name === "All Books" &&
-                          groups &&
-                          groups.length > 0 &&
-                          groups.find((group) => group.default)?.books.length}
+                          groupsQuery.data &&
+                          groupsQuery.data.length > 0 &&
+                          groupsQuery.data.find((group) => group.default)?.books
+                            .length}
                         {defaultGroup.name === "Favorites" &&
-                          books &&
-                          books.length > 0 &&
-                          books.filter((book) => book.favorite).length}
+                          booksQuery.data &&
+                          booksQuery.data.length > 0 &&
+                          booksQuery.data.filter((book) => book.favorite)
+                            .length}
                       </SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
@@ -164,7 +165,7 @@ export function AppSidebar() {
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
-              {status === "pending" ? (
+              {isLoading ? (
                 <SidebarMenuItem>
                   <Skeleton className="h-8 w-full rounded-md" />
                 </SidebarMenuItem>
@@ -172,7 +173,7 @@ export function AppSidebar() {
                 personalGroups.map((group) => (
                   <SidebarMenuItem key={group.id}>
                     <SidebarMenuButton asChild isActive={groupId === group.id}>
-                      <Link href={`/groups/${group.id}`}>
+                      <Link href={`/groupsQuery.data/${group.id}`}>
                         <Library />
                         <span>{group.name}</span>
                       </Link>
