@@ -89,6 +89,10 @@ function CreateGroupForm({
       });
 
       if (groupId) {
+        queryClient.invalidateQueries({
+          queryKey: ["books"],
+        });
+        
         onOpenChange(false);
       }
 
