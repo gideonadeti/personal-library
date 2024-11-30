@@ -7,6 +7,7 @@ import ColumnHeader from "../column-header";
 import RowActions from "./row-actions";
 import BookStatus from "../../book-status";
 import { Book } from "@/app/types";
+import { Button } from "@/components/ui/button";
 
 export const columns: ColumnDef<Book>[] = [
   {
@@ -27,8 +28,14 @@ export const columns: ColumnDef<Book>[] = [
   },
   {
     accessorKey: "description",
-    header: ({ column }) => (
-      <ColumnHeader column={column} title="Description" />
+    header: () => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 data-[state=open]:bg-accent"
+      >
+        <span>Description</span>
+      </Button>
     ),
     cell: ({ row }) => {
       const book = row.original;
@@ -44,7 +51,15 @@ export const columns: ColumnDef<Book>[] = [
   },
   {
     accessorKey: "author",
-    header: ({ column }) => <ColumnHeader column={column} title="Author" />,
+    header: () => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 data-[state=open]:bg-accent"
+      >
+        <span>Author</span>
+      </Button>
+    ),
     cell: ({ row }) => {
       const book = row.original;
 
@@ -53,7 +68,15 @@ export const columns: ColumnDef<Book>[] = [
   },
   {
     accessorKey: "genres",
-    header: ({ column }) => <ColumnHeader column={column} title="Genre(s)" />,
+    header: () => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 data-[state=open]:bg-accent"
+      >
+        <span>Genres</span>
+      </Button>
+    ),
     cell: ({ row }) => {
       const book = row.original;
 
@@ -66,7 +89,15 @@ export const columns: ColumnDef<Book>[] = [
   },
   {
     accessorKey: "status",
-    header: ({ column }) => <ColumnHeader column={column} title="Status" />,
+    header: () => (
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 data-[state=open]:bg-accent"
+      >
+        <span>Status</span>
+      </Button>
+    ),
     cell: ({ row }) => {
       const book = row.original;
 
