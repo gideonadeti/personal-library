@@ -5,8 +5,8 @@ import { Star } from "lucide-react";
 
 import ColumnHeader from "../column-header";
 import RowActions from "./row-actions";
+import BookStatus from "../../book-status";
 import { Book } from "@/app/types";
-import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Book>[] = [
   {
@@ -70,27 +70,7 @@ export const columns: ColumnDef<Book>[] = [
     cell: ({ row }) => {
       const book = row.original;
 
-      function getColor(status: string) {
-        switch (status) {
-          case "unread":
-            return "bg-red-500";
-          case "reading":
-            return "bg-yellow-500";
-          case "read":
-            return "bg-green-500";
-          default:
-            return "bg-gray-500";
-        }
-      }
-
-      return (
-        <Badge
-          variant="outline"
-          className={`rounded-full ${getColor(book.status)}`}
-        >
-          {book.status}
-        </Badge>
-      );
+      return <BookStatus status={book.status} />;
     },
   },
   {
