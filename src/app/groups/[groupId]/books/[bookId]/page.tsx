@@ -6,6 +6,7 @@ import { Star, Plus } from "lucide-react";
 
 import useBooksData from "@/app/hooks/use-books-data";
 import BookStatus from "@/app/components/book-status";
+import CreateNote from "@/app/components/create-note";
 import { H2, Muted, H4, H3 } from "@/app/components/custom-tags";
 import { Book } from "@/app/types";
 import { Spinner } from "@/components/ui/spinner";
@@ -23,6 +24,7 @@ export default function Page() {
   const { bookId } = useParams();
   const { booksQuery, isLoading } = useBooksData();
   const [book, setBook] = useState<Book>();
+  const [openCreateNote, setOpenCreateNote] = useState(false);
 
   useEffect(() => {
     if (booksQuery.data) {
@@ -60,6 +62,7 @@ export default function Page() {
                 size="icon"
                 title="Create note"
                 className="rounded-full"
+                onClick={() => setOpenCreateNote(true)}
               >
                 <Plus />
               </Button>
@@ -69,7 +72,9 @@ export default function Page() {
                 {book.notes.map((note) => (
                   <AccordionItem key={note.id} value={note.id}>
                     <AccordionTrigger>
-                      {note.content.slice(0, 25)}
+                      {note.content.length > 25
+                        ? note.content.slice(0, 25) + "..."
+                        : note.content}
                     </AccordionTrigger>
                     <AccordionContent>{note.content}</AccordionContent>
                   </AccordionItem>
@@ -81,6 +86,11 @@ export default function Page() {
           </div>
         </div>
       )}
+      <CreateNote
+        bookId={bookId as string}
+        open={openCreateNote}
+        onOpenChange={setOpenCreateNote}
+      />
     </div>
   );
 }

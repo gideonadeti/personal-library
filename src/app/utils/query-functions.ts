@@ -169,3 +169,23 @@ export async function createBook(
     throw err;
   }
 }
+
+export async function createNote(
+  userId: string,
+  bookId: string,
+  content: string
+) {
+  try {
+    const res = await axios.post(`/notes`, {
+      userId,
+      bookId,
+      content,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error creating note:", err);
+
+    throw err;
+  }
+}
