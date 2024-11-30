@@ -2,6 +2,7 @@
 
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Book } from "@/app/types";
@@ -18,6 +19,7 @@ interface RowActionsProps<TData> {
 }
 
 export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
+  const router = useRouter();
   const book = row.original as Book;
 
   return (
@@ -32,7 +34,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={() => console.log("Opening...", book.title)}>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/groups/${book.groupId}/books/${book.id}`)
+          }
+        >
           Open
         </DropdownMenuItem>
         <DropdownMenuItem
