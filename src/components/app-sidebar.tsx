@@ -218,6 +218,7 @@ export function AppSidebar() {
             variant="outline"
             onClick={() => setOpenCreateBook(true)}
             className="w-full"
+            disabled={isLoading}
           >
             Create Book
           </Button>
