@@ -90,14 +90,6 @@ function AddTaskForm() {
     genres: [],
   };
 
-  const resetValues = {
-    title: "",
-    description: "",
-    groupId: groupsQuery.data?.find((group) => group.default)?.id || "",
-    authorId: "",
-    genres: [],
-  };
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -119,7 +111,9 @@ function AddTaskForm() {
           ) as string[] // Convert selected genres to their ids
       ),
     onSuccess: (message) => {
-      form.reset(resetValues);
+      form.resetField("title", { defaultValue: "" });
+      form.resetField("description", { defaultValue: "" });
+      form.resetField("genres", { defaultValue: [] });
       queryClient.invalidateQueries({ queryKey: ["books"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       queryClient.invalidateQueries({ queryKey: ["authors"] });
