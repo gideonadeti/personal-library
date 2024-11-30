@@ -34,7 +34,7 @@ export default function Page() {
   return (
     <div className="px-8 py-4">
       {isLoading && <Spinner />}
-      {book && (
+      {book ? (
         <div>
           <H4 className="text-sm">{book.author.name}</H4>
           <H2>{book.title}</H2>
@@ -85,6 +85,8 @@ export default function Page() {
             )}
           </div>
         </div>
+      ) : (
+        !isLoading && <Muted>Book not found</Muted>
       )}
       <CreateNote
         bookId={bookId as string}
