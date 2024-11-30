@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 import { AxiosError } from "axios";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 
 import CreateAuthor from "./create-author";
 import CreateGenre from "./create-genre";
-import { Group, Author, Genre } from "../types";
+import useBooksData from "../hooks/use-books-data";
 import { useToast } from "@/hooks/use-toast";
 import { createBook } from "@/app/utils/query-functions";
 import { Button } from "@/components/ui/button";
@@ -73,9 +73,7 @@ export default function CreateBook({
 }
 
 function AddTaskForm() {
-  const { data: groups } = useQuery<Group[]>({ queryKey: ["groups"] });
-  const { data: authors } = useQuery<Author[]>({ queryKey: ["authors"] });
-  const { data: genres } = useQuery<Genre[]>({ queryKey: ["genres"] });
+  const { groupsQuery, authorsQuery, genresQuery } = useBooksData();
   const { user } = useUser();
   const { toast } = useToast();
 
@@ -87,7 +85,7 @@ function AddTaskForm() {
   const defaultValues = {
     title: "",
     description: "",
-    groupId: groups?.find((group) => group.default)?.id || "",
+    groupId: groupsQuery.data?.find((group) => group.default)?.id || "",
     authorId: "",
     genres: [],
   };
@@ -95,7 +93,7 @@ function AddTaskForm() {
   const resetValues = {
     title: "",
     description: "",
-    groupId: groups?.find((group) => group.default)?.id || "",
+    groupId: groupsQuery.data?.find((group) => group.default)?.id || "",
     authorId: "",
     genres: [],
   };
@@ -116,7 +114,8 @@ function AddTaskForm() {
         form
           .getValues("genres")
           .map(
-            (genre) => genres?.find((g) => g.name.toLowerCase() === genre)?.id
+            (genre) =>
+              genresQuery.data?.find((g) => g.name.toLowerCase() === genre)?.id
           ) as string[] // Convert selected genres to their ids
       ),
     onSuccess: (message) => {
@@ -192,7 +191,7 @@ function AddTaskForm() {
                     <SelectValue placeholder="Select group" />
                   </SelectTrigger>
                   <SelectContent>
-                    {groups?.map((group) => (
+                    {groupsQuery.data?.map((group) => (
                       <SelectItem key={group.id} value={group.id}>
                         {group.name}
                       </SelectItem>
@@ -231,7 +230,7 @@ function AddTaskForm() {
                     </Button>
                   </div>
                   <SelectContent>
-                    {authors?.map((author) => (
+                    {authorsQuery.data?.map((author) => (
                       <SelectItem key={author.id} value={author.id}>
                         {author.name}
                       </SelectItem>
@@ -271,14 +270,14 @@ function AddTaskForm() {
                   </div>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                        {genres?.map((genre) => (
-                          <MultiSelectorItem
-                            key={genre.id}
-                            value={genre.name.toLowerCase()}
-                          >
-                            <span>{genre.name}</span>
-                          </MultiSelectorItem>
-                        ))}
+                      {genresQuery.data?.map((genre) => (
+                        <MultiSelectorItem
+                          key={genre.id}
+                          value={genre.name.toLowerCase()}
+                        >
+                          <span>{genre.name}</span>
+                        </MultiSelectorItem>
+                      ))}
                     </MultiSelectorList>
                   </MultiSelectorContent>
                 </MultiSelector>
