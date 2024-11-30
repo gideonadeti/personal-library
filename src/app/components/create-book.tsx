@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 
 import CreateAuthor from "./create-author";
 import CreateGenre from "./create-genre";
+import CreateGroup from "./create-group";
 import useBooksData from "../hooks/use-books-data";
 import { useToast } from "@/hooks/use-toast";
 import { createBook } from "@/app/utils/query-functions";
@@ -79,6 +80,7 @@ function AddTaskForm() {
 
   const [openCreateAuthor, setOpenCreateAuthor] = useState(false);
   const [openCreateGenre, setOpenCreateGenre] = useState(false);
+  const [openCreateGroup, setOpenCreateGroup] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -181,9 +183,20 @@ function AddTaskForm() {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select group" />
-                  </SelectTrigger>
+                  <div className="flex items-center space-x-2">
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select group" />
+                    </SelectTrigger>
+                    <Button
+                      variant="outline"
+                      className="ms-auto"
+                      onClick={() => setOpenCreateGroup(true)}
+                      title="Create group"
+                      type="button"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
                   <SelectContent>
                     {groupsQuery.data?.map((group) => (
                       <SelectItem key={group.id} value={group.id}>
@@ -290,6 +303,7 @@ function AddTaskForm() {
         onOpenChange={setOpenCreateAuthor}
       />
       <CreateGenre open={openCreateGenre} onOpenChange={setOpenCreateGenre} />
+      <CreateGroup open={openCreateGroup} onOpenChange={setOpenCreateGroup} />
     </Form>
   );
 }

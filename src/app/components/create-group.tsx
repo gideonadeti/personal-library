@@ -36,8 +36,8 @@ export default function CreateGroup({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  groupId: string;
-  initialName: string;
+  groupId?: string;
+  initialName?: string;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,8 +60,8 @@ function CreateGroupForm({
   initialName,
   onOpenChange,
 }: {
-  groupId: string;
-  initialName: string;
+  groupId?: string;
+  initialName?: string;
   onOpenChange: (open: boolean) => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
