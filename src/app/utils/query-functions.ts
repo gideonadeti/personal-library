@@ -189,3 +189,30 @@ export async function createNote(
     throw err;
   }
 }
+
+export async function updateBook(
+  userId: string,
+  bookId: string,
+  title: string,
+  description: string,
+  groupId: string,
+  authorId: string,
+  genreIds: string[]
+) {
+  try {
+    const res = await axios.put(`/books/${bookId}`, {
+      userId,
+      title,
+      description,
+      groupId,
+      authorId,
+      genreIds,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error updating book:", err);
+
+    throw err;
+  }
+}

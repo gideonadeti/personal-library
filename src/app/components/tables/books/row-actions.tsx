@@ -3,7 +3,9 @@
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
+import CreateBook from "../../create-book";
 import { Button } from "@/components/ui/button";
 import { Book } from "@/app/types";
 import {
@@ -21,6 +23,8 @@ interface RowActionsProps<TData> {
 export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
   const router = useRouter();
   const book = row.original as Book;
+
+  const [openUpdateBook, setOpenUpdateBook] = useState(false);
 
   return (
     <DropdownMenu>
@@ -41,9 +45,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         >
           Open
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => console.log("Updating...", book.title)}
-        >
+        <DropdownMenuItem onClick={() => setOpenUpdateBook(true)}>
           Update
         </DropdownMenuItem>
         <DropdownMenuItem
@@ -64,6 +66,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
+      <CreateBook
+        open={openUpdateBook}
+        onOpenChange={setOpenUpdateBook}
+        book={book}
+      />
     </DropdownMenu>
   );
 }

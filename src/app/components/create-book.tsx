@@ -12,10 +12,11 @@ import CreateGenre from "./create-genre";
 import CreateGroup from "./create-group";
 import useBooksData from "../hooks/use-books-data";
 import { useToast } from "@/hooks/use-toast";
-import { createBook } from "@/app/utils/query-functions";
+import { createBook, updateBook } from "@/app/utils/query-functions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Book } from "../types";
 import {
   MultiSelector,
   MultiSelectorTrigger,
@@ -57,9 +58,11 @@ const formSchema = z.object({
 export default function CreateBook({
   open,
   onOpenChange,
+  book,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  book?: Book;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -67,13 +70,19 @@ export default function CreateBook({
         <DialogHeader>
           <DialogTitle>Create Book</DialogTitle>
         </DialogHeader>
-        <AddTaskForm />
+        <AddTaskForm book={book} onOpenChange={onOpenChange} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddTaskForm() {
+function AddTaskForm({
+  book,
+  onOpenChange,
+}: {
+  book?: Book;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { groupsQuery, authorsQuery, genresQuery } = useBooksData();
   const { user } = useUser();
   const { toast } = useToast();
@@ -85,11 +94,14 @@ function AddTaskForm() {
   const queryClient = useQueryClient();
 
   const defaultValues = {
-    title: "",
-    description: "",
-    groupId: groupsQuery.data?.find((group) => group.default)?.id || "",
-    authorId: "",
-    genres: [],
+    title: book?.title || "",
+    description: book?.description || "",
+    groupId:
+      book?.groupId ||
+      groupsQuery.data?.find((group) => group.default)?.id ||
+      "",
+    authorId: book?.author.id || "",
+    genres: book?.genres.map((genre) => genre.name.toLowerCase()) || [],
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -98,35 +110,55 @@ function AddTaskForm() {
   });
 
   const { mutate, status } = useMutation<string, AxiosError>({
-    mutationFn: () =>
-      createBook(
-        user!.id,
-        form.getValues("title"),
-        form.getValues("description"),
-        form.getValues("groupId"),
-        form.getValues("authorId"),
-        form
-          .getValues("genres")
-          .map(
-            (genre) =>
-              genresQuery.data?.find((g) => g.name.toLowerCase() === genre)?.id
-          ) as string[] // Convert selected genres to their ids
-      ),
+    mutationFn: () => {
+      if (book) {
+        return updateBook(
+          user!.id,
+          book.id,
+          form.getValues("title"),
+          form.getValues("description"),
+          form.getValues("groupId"),
+          form.getValues("authorId"),
+          form
+            .getValues("genres")
+            .map(
+              (genre) =>
+                genresQuery.data?.find((g) => g.name.toLowerCase() === genre)
+                  ?.id
+            ) as string[]
+        );
+      } else {
+        return createBook(
+          user!.id,
+          form.getValues("title"),
+          form.getValues("description"),
+          form.getValues("groupId"),
+          form.getValues("authorId"),
+          form
+            .getValues("genres")
+            .map(
+              (genre) =>
+                genresQuery.data?.find((g) => g.name.toLowerCase() === genre)
+                  ?.id
+            ) as string[] // Convert selected genres to their ids
+        );
+      }
+    },
     onSuccess: (message) => {
-      form.resetField("title", { defaultValue: "" });
-      form.resetField("description", { defaultValue: "" });
-      form.resetField("genres", { defaultValue: [] });
       queryClient.invalidateQueries({ queryKey: ["books"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       queryClient.invalidateQueries({ queryKey: ["authors"] });
+      queryClient.invalidateQueries({ queryKey: ["genres"] });
 
-      if (form.getValues("genres").length > 0) {
-        queryClient.invalidateQueries({
-          queryKey: ["genres"],
-        });
-      }
+      form.resetField("title", { defaultValue: "" });
+      form.resetField("description", { defaultValue: "" });
+      form.resetField("genres", { defaultValue: [] });
 
       toast({ description: message });
+
+      if (book) {
+        onOpenChange(false);
+      }
     },
     onError: (err) => {
       const description =
