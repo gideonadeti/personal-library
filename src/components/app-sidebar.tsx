@@ -11,7 +11,7 @@ import {
   BookHeart,
   Library,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 import CreateGroup from "@/app/components/create-group";
 import DeleteGroup from "@/app/components/delete-group";
@@ -43,7 +43,14 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-const defaultGroups = [
+// Type definitions to improve type safety
+interface DefaultGroup {
+  name: string;
+  href: string;
+  icon: React.ComponentType;
+}
+
+const DEFAULT_GROUPS: DefaultGroup[] = [
   { name: "All Books", href: "/groups/all-books", icon: LibraryBig },
   { name: "Favorites", href: "/groups/favorites", icon: BookHeart },
   { name: "Authors", href: "/authors", icon: User },
@@ -56,51 +63,92 @@ export function AppSidebar() {
     useBooksData();
 
   const pathname = usePathname();
-  const personalGroups =
-    groupsQuery.data?.filter((group) => !group.default) || [];
 
-  const [openCreateGroup, setOpenCreateGroup] = useState(false);
-  const [openCreateAuthor, setOpenCreateAuthor] = useState(false);
-  const [openCreateGenre, setOpenCreateGenre] = useState(false);
-  const [openCreateBook, setOpenCreateBook] = useState(false);
-  const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
-  const [updateGroupId, setUpdateGroupId] = useState("");
-  const [deleteGroupId, setDeleteGroupId] = useState("");
-  const [initialName, setInitialName] = useState("");
+  // State management for modals
+  const [modalState, setModalState] = useState({
+    createGroup: { isOpen: false, groupId: "", initialName: "" },
+    deleteGroup: { isOpen: false, groupId: "" },
+    createAuthor: { isOpen: false },
+    createGenre: { isOpen: false },
+    createBook: { isOpen: false },
+  });
 
-  function handleUpdateGroup(id: string, name: string) {
-    setUpdateGroupId(id);
-    setInitialName(name);
-    setOpenCreateGroup(true);
-  }
+  // Memoized personal groups to avoid unnecessary re-renders
+  const personalGroups = useMemo(
+    () => groupsQuery.data?.filter((group) => !group.default) || [],
+    [groupsQuery.data]
+  );
 
-  function handleCreateGroup() {
-    setUpdateGroupId("");
-    setInitialName("");
-    setOpenCreateGroup(true);
-  }
+  // Centralized modal management functions
+  const openModal = useCallback(
+    (modalName: keyof typeof modalState, params = {}) => {
+      setModalState((prev) => ({
+        ...prev,
+        [modalName]: {
+          ...prev[modalName],
+          isOpen: true,
+          ...params,
+        },
+      }));
+    },
+    []
+  );
 
-  function handleDeleteGroup(id: string) {
-    setDeleteGroupId(id);
-    setOpenDeleteGroup(true);
-  }
+  const closeModal = useCallback((modalName: keyof typeof modalState) => {
+    setModalState((prev) => ({
+      ...prev,
+      [modalName]: {
+        ...prev[modalName],
+        isOpen: false,
+      },
+    }));
+  }, []);
+
+  // Helper function to determine active state for default groups
+  const isDefaultGroupActive = useCallback(
+    (defaultGroup: DefaultGroup) => {
+      return (
+        groupId === defaultGroup.name.toLowerCase() ||
+        (groupId === "all-books" && defaultGroup.name === "All Books") ||
+        (pathname === "/authors" && defaultGroup.name === "Authors") ||
+        (pathname === "/genres" && defaultGroup.name === "Genres")
+      );
+    },
+    [groupId, pathname]
+  );
+
+  // Helper function to get badge count for default groups
+  const getDefaultGroupBadgeCount = useCallback(
+    (groupName: string) => {
+      switch (groupName) {
+        case "Authors":
+          return authorsQuery.data?.length || 0;
+        case "Genres":
+          return genresQuery.data?.length || 0;
+        case "All Books":
+          return (
+            groupsQuery.data?.find((group) => group.default)?.books.length || 0
+          );
+        case "Favorites":
+          return booksQuery.data?.filter((book) => book.favorite).length || 0;
+        default:
+          return 0;
+      }
+    },
+    [authorsQuery.data, genresQuery.data, groupsQuery.data, booksQuery.data]
+  );
 
   return (
     <Sidebar>
       <SidebarContent>
+        {/* Default Groups Section */}
         <SidebarGroup>
           <SidebarGroupLabel>Default Groups</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {defaultGroups.map((defaultGroup) => {
-                // Check if groupId matches the group name or if the pathname is one of the special cases
-                const isActive =
-                  groupId === defaultGroup.name.toLowerCase() ||
-                  (groupId === "all-books" &&
-                    defaultGroup.name === "All Books") ||
-                  (pathname === "/authors" &&
-                    defaultGroup.name === "Authors") ||
-                  (pathname === "/genres" && defaultGroup.name === "Genres");
+              {DEFAULT_GROUPS.map((defaultGroup) => {
+                const isActive = isDefaultGroupActive(defaultGroup);
+                const badgeCount = getDefaultGroupBadgeCount(defaultGroup.name);
 
                 return (
                   <SidebarMenuItem key={defaultGroup.name}>
@@ -113,24 +161,19 @@ export function AppSidebar() {
                     {defaultGroup.name === "Authors" ||
                     defaultGroup.name === "Genres" ? (
                       <>
-                        <SidebarMenuBadge className="me-5">
-                          {defaultGroup.name === "Authors" &&
-                            authorsQuery.data &&
-                            authorsQuery.data.length > 0 &&
-                            authorsQuery.data.length}
-                          {defaultGroup.name === "Genres" &&
-                            genresQuery.data &&
-                            genresQuery.data.length > 0 &&
-                            genresQuery.data.length}
-                        </SidebarMenuBadge>
+                        {badgeCount > 0 && (
+                          <SidebarMenuBadge className="me-5">
+                            {badgeCount}
+                          </SidebarMenuBadge>
+                        )}
                         <SidebarMenuAction
                           showOnHover
                           title={`Create ${defaultGroup.name.slice(0, -1)}`}
                           onClick={() => {
                             if (defaultGroup.name === "Authors") {
-                              setOpenCreateAuthor(true);
+                              openModal("createAuthor");
                             } else if (defaultGroup.name === "Genres") {
-                              setOpenCreateGenre(true);
+                              openModal("createGenre");
                             }
                           }}
                         >
@@ -138,18 +181,9 @@ export function AppSidebar() {
                         </SidebarMenuAction>
                       </>
                     ) : (
-                      <SidebarMenuBadge>
-                        {defaultGroup.name === "All Books" &&
-                          groupsQuery.data &&
-                          groupsQuery.data.length > 0 &&
-                          groupsQuery.data.find((group) => group.default)?.books
-                            .length}
-                        {defaultGroup.name === "Favorites" &&
-                          booksQuery.data &&
-                          booksQuery.data.length > 0 &&
-                          booksQuery.data.filter((book) => book.favorite)
-                            .length}
-                      </SidebarMenuBadge>
+                      badgeCount > 0 && (
+                        <SidebarMenuBadge>{badgeCount}</SidebarMenuBadge>
+                      )
                     )}
                   </SidebarMenuItem>
                 );
@@ -157,9 +191,14 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Personal Groups Section */}
         <SidebarGroup>
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
-          <SidebarGroupAction title="Create Group" onClick={handleCreateGroup}>
+          <SidebarGroupAction
+            title="Create Group"
+            onClick={() => openModal("createGroup")}
+          >
             <Plus />
           </SidebarGroupAction>
           <SidebarGroupContent>
@@ -178,9 +217,11 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
 
-                    <SidebarMenuBadge className="me-5">
-                      {group.books.length > 0 && group.books.length}
-                    </SidebarMenuBadge>
+                    {group.books.length > 0 && (
+                      <SidebarMenuBadge className="me-5">
+                        {group.books.length}
+                      </SidebarMenuBadge>
+                    )}
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -192,13 +233,20 @@ export function AppSidebar() {
                       <DropdownMenuContent>
                         <DropdownMenuItem
                           onClick={() =>
-                            handleUpdateGroup(group.id, group.name)
+                            openModal("createGroup", {
+                              groupId: group.id,
+                              initialName: group.name,
+                            })
                           }
                         >
                           <span>Update</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleDeleteGroup(group.id)}
+                          onClick={() =>
+                            openModal("deleteGroup", {
+                              groupId: group.id,
+                            })
+                          }
                         >
                           <span>Delete</span>
                         </DropdownMenuItem>
@@ -211,35 +259,55 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* Sidebar Footer */}
       <SidebarFooter>
         <SidebarGroup className="flex flex-row items-center justify-between space-x-4">
           <ThemeToggler />
           <Button
             variant="outline"
-            onClick={() => setOpenCreateBook(true)}
+            onClick={() => openModal("createBook")}
             className="w-full"
             disabled={isLoading}
           >
             Create Book
           </Button>
         </SidebarGroup>
+
+        {/* Modal Components */}
         <CreateGroup
-          open={openCreateGroup}
-          onOpenChange={setOpenCreateGroup}
-          groupId={updateGroupId}
-          initialName={initialName}
+          open={modalState.createGroup.isOpen}
+          onOpenChange={(open) =>
+            open ? openModal("createGroup") : closeModal("createGroup")
+          }
+          groupId={modalState.createGroup.groupId}
+          initialName={modalState.createGroup.initialName}
         />
         <DeleteGroup
-          open={openDeleteGroup}
-          onOpenChange={setOpenDeleteGroup}
-          groupId={deleteGroupId}
+          open={modalState.deleteGroup.isOpen}
+          onOpenChange={(open) =>
+            open ? openModal("deleteGroup") : closeModal("deleteGroup")
+          }
+          groupId={modalState.deleteGroup.groupId}
         />
         <CreateAuthor
-          open={openCreateAuthor}
-          onOpenChange={setOpenCreateAuthor}
+          open={modalState.createAuthor.isOpen}
+          onOpenChange={(open) =>
+            open ? openModal("createAuthor") : closeModal("createAuthor")
+          }
         />
-        <CreateGenre open={openCreateGenre} onOpenChange={setOpenCreateGenre} />
-        <CreateBook open={openCreateBook} onOpenChange={setOpenCreateBook} />
+        <CreateGenre
+          open={modalState.createGenre.isOpen}
+          onOpenChange={(open) =>
+            open ? openModal("createGenre") : closeModal("createGenre")
+          }
+        />
+        <CreateBook
+          open={modalState.createBook.isOpen}
+          onOpenChange={(open) =>
+            open ? openModal("createBook") : closeModal("createBook")
+          }
+        />
       </SidebarFooter>
     </Sidebar>
   );
