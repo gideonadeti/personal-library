@@ -21,7 +21,11 @@ export const columns: ColumnDef<Book>[] = [
           <span>
             {book.favorite && <Star className="text-yellow-500 w-4 h-4 mr-1" />}
           </span>
-          <span>{book.title}</span>
+          <span>
+            {book.title.length > 25
+              ? book.title.slice(0, 25) + "..."
+              : book.title}
+          </span>
         </div>
       );
     },
