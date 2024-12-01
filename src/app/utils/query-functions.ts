@@ -216,3 +216,15 @@ export async function updateBook(
     throw err;
   }
 }
+
+export async function toggleFavorite(userId: string, bookId: string) {
+  try {
+    await axios.patch(`/books/${bookId}`, {
+      userId,
+    });
+  } catch (err) {
+    console.error("Error toggling favorite:", err);
+
+    throw err;
+  }
+}

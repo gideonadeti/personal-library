@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import CreateBook from "../../create-book";
+import ToggleFavorite from "../../toggle-favorite";
 import { Button } from "@/components/ui/button";
 import { Book } from "@/app/types";
 import {
@@ -48,16 +49,10 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         <DropdownMenuItem onClick={() => setOpenUpdateBook(true)}>
           Update
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() =>
-            console.log(
-              `${book.favorite ? "Un-marking" : "Marking"} ${
-                book.title
-              } as favorite...`
-            )
-          }
-        >
-          {book.favorite ? "Un-mark as favorite" : "Mark as favorite"}
+        <DropdownMenuItem>
+          <ToggleFavorite book={book}>
+            {book.favorite ? "Un-mark as favorite" : "Mark as favorite"}
+          </ToggleFavorite>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
