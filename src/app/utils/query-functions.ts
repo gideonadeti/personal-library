@@ -228,3 +228,22 @@ export async function toggleFavorite(userId: string, bookId: string) {
     throw err;
   }
 }
+
+export async function updateBookStatus(
+  userId: string,
+  bookId: string,
+  status: string
+) {
+  try {
+    const res = await axios.patch(`/books/${bookId}`, {
+      userId,
+      status,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error updating book status:", err);
+
+    throw err;
+  }
+}

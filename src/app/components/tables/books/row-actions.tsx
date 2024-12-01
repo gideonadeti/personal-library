@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import CreateBook from "../../create-book";
 import ToggleFavorite from "../../toggle-favorite";
+import UpdateBookStatus from "../../update-book-status";
 import { Button } from "@/components/ui/button";
 import { Book } from "@/app/types";
 import {
@@ -26,6 +27,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
   const book = row.original as Book;
 
   const [openUpdateBook, setOpenUpdateBook] = useState(false);
+  const [openUpdateBookStatus, setOpenUpdateBookStatus] = useState(false);
 
   return (
     <DropdownMenu>
@@ -54,6 +56,9 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
             {book.favorite ? "Un-mark as favorite" : "Mark as favorite"}
           </ToggleFavorite>
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setOpenUpdateBookStatus(true)}>
+          Update book status
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => console.log("Deleting...", book.title)}
@@ -64,6 +69,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
       <CreateBook
         open={openUpdateBook}
         onOpenChange={setOpenUpdateBook}
+        book={book}
+      />
+      <UpdateBookStatus
+        open={openUpdateBookStatus}
+        onOpenChange={setOpenUpdateBookStatus}
         book={book}
       />
     </DropdownMenu>
