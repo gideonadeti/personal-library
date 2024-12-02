@@ -88,12 +88,8 @@ function CreateGroupForm({
         queryKey: ["groups"],
       });
 
-      // If it's an update, invalidate books as well
+      // If it's an update, close the dialog
       if (groupId) {
-        queryClient.invalidateQueries({
-          queryKey: ["books"],
-        });
-        
         onOpenChange(false);
       }
 
