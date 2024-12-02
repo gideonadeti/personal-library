@@ -8,6 +8,7 @@ import { useState } from "react";
 import CreateBook from "../../create-book";
 import ToggleFavorite from "../../toggle-favorite";
 import UpdateBookStatus from "../../update-book-status";
+import DeleteBook from "../../delete-book";
 import { Button } from "@/components/ui/button";
 import { Book } from "@/app/types";
 import {
@@ -28,6 +29,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
 
   const [openUpdateBook, setOpenUpdateBook] = useState(false);
   const [openUpdateBookStatus, setOpenUpdateBookStatus] = useState(false);
+  const [openDeleteBook, setOpenDeleteBook] = useState(false);
 
   return (
     <DropdownMenu>
@@ -60,9 +62,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
           Update book status
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => console.log("Deleting...", book.title)}
-        >
+        <DropdownMenuItem onClick={() => setOpenDeleteBook(true)}>
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -75,6 +75,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         open={openUpdateBookStatus}
         onOpenChange={setOpenUpdateBookStatus}
         book={book}
+      />
+      <DeleteBook
+        open={openDeleteBook}
+        onOpenChange={setOpenDeleteBook}
+        bookId={book.id}
       />
     </DropdownMenu>
   );
