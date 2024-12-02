@@ -247,3 +247,17 @@ export async function updateBookStatus(
     throw err;
   }
 }
+
+export async function deleteBook(userId: string, bookId: string) {
+  try {
+    const res = await axios.delete(`/books/${bookId}`, {
+      params: { userId },
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error deleting book:", err);
+
+    throw err;
+  }
+}
