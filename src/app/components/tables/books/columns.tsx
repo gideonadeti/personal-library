@@ -107,6 +107,9 @@ export const columns: ColumnDef<Book>[] = [
 
       return <BookStatus status={book.status} />;
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     id: "actions",
