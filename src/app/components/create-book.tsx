@@ -70,13 +70,13 @@ export default function CreateBook({
         <DialogHeader>
           <DialogTitle>Create Book</DialogTitle>
         </DialogHeader>
-        <AddTaskForm book={book} onOpenChange={onOpenChange} />
+        <CreateBookForm book={book} onOpenChange={onOpenChange} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function AddTaskForm({
+function CreateBookForm({
   book,
   onOpenChange,
 }: {
@@ -156,6 +156,7 @@ function AddTaskForm({
 
       toast({ description: message });
 
+      // It was an update so close the dialog
       if (book) {
         onOpenChange(false);
       }
