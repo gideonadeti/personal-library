@@ -76,16 +76,11 @@ export async function readAuthors(userId: string) {
   }
 }
 
-export async function createAuthor(
-  userId: string,
-  name: string,
-  description: string
-) {
+export async function createAuthor(userId: string, name: string) {
   try {
     const res = await axios.post(`/authors`, {
       userId,
       name,
-      description,
     });
 
     return res.data.msg;
@@ -110,16 +105,11 @@ export async function readGenres(userId: string) {
   }
 }
 
-export async function createGenre(
-  userId: string,
-  name: string,
-  description: string
-) {
+export async function createGenre(userId: string, name: string) {
   try {
     const res = await axios.post(`/genres`, {
       userId,
       name,
-      description,
     });
 
     return res.data.msg;

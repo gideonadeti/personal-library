@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createAuthor } from "@/app/utils/query-functions";
 import { useToast } from "@/hooks/use-toast";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -27,7 +26,6 @@ import {
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
-  description: z.string(),
 });
 
 export default function CreateAuthor({
@@ -54,7 +52,6 @@ function CreateAuthorForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
     },
   });
   const queryClient = useQueryClient();
@@ -62,14 +59,9 @@ function CreateAuthorForm() {
   const { user } = useUser();
   const { toast } = useToast();
   const { mutate, status } = useMutation<string, AxiosError>({
-    mutationFn: () =>
-      createAuthor(
-        user!.id,
-        form.getValues("name"),
-        form.getValues("description")
-      ),
+    mutationFn: () => createAuthor(user!.id, form.getValues("name")),
     onSuccess: (message) => {
-      form.reset({ name: "", description: "" });
+      form.reset({ name: "" });
       queryClient.invalidateQueries({
         queryKey: ["authors"],
       });
@@ -105,25 +97,6 @@ function CreateAuthorForm() {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input {...field} disabled={status === "pending"} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  className="resize-none"
-                  rows={3}
-                  {...field}
-                  disabled={status === "pending"}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

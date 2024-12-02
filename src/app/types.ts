@@ -28,13 +28,11 @@ export interface Group {
 export interface Author {
   id: string;
   name: string;
-  description: string;
   books: Book[];
 }
 
 export interface Genre {
   id: string;
   name: string;
-  description: string;
   books: Book[];
 }
