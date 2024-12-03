@@ -270,3 +270,17 @@ export async function updateAuthor(
     throw err;
   }
 }
+
+export async function deleteAuthor(userId: string, authorId: string) {
+  try {
+    const res = await axios.delete(`/authors/${authorId}`, {
+      params: { userId },
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error deleting author:", err);
+
+    throw err;
+  }
+}

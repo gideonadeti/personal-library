@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import AuthorDialog from "../../author-dialog";
 import CreateAuthor from "../../create-author";
+import DeleteAuthor from "../../delete-author";
 import { Button } from "@/components/ui/button";
 import { Author } from "@/app/types";
 import {
@@ -25,6 +26,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
 
   const [openAuthorDialog, setOpenAuthorDialog] = useState(false);
   const [openUpdateAuthor, setOpenUpdateAuthor] = useState(false);
+  const [openDeleteAuthor, setOpenDeleteAuthor] = useState(false);
 
   return (
     <DropdownMenu>
@@ -45,7 +47,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
           Update
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => console.log("Deleting", author.name)}>
+        <DropdownMenuItem onClick={() => setOpenDeleteAuthor(true)}>
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -58,6 +60,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         open={openUpdateAuthor}
         onOpenChange={setOpenUpdateAuthor}
         author={author}
+      />
+      <DeleteAuthor
+        open={openDeleteAuthor}
+        onOpenChange={setOpenDeleteAuthor}
+        authorId={author.id}
       />
     </DropdownMenu>
   );
