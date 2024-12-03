@@ -31,29 +31,6 @@ export const columns: ColumnDef<Book>[] = [
     },
   },
   {
-    accessorKey: "description",
-    header: () => (
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 data-[state=open]:bg-accent"
-      >
-        <span>Description</span>
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const book = row.original;
-
-      return (
-        <span>
-          {book.description.length > 50
-            ? book.description.slice(0, 50) + "..."
-            : book.description}
-        </span>
-      );
-    },
-  },
-  {
     accessorKey: "author",
     header: () => (
       <Button
