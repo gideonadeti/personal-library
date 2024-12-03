@@ -83,6 +83,12 @@ function CreateAuthorForm({
         queryKey: ["authors"],
       });
 
+      if (author) {
+        queryClient.invalidateQueries({
+          queryKey: ["books"],
+        });
+      }
+
       toast({
         description: message,
       });
