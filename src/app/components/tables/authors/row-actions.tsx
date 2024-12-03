@@ -2,7 +2,9 @@
 
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
 
+import AuthorDialog from "../../author-dialog";
 import { Button } from "@/components/ui/button";
 import { Author } from "@/app/types";
 import {
@@ -20,6 +22,8 @@ interface RowActionsProps<TData> {
 export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
   const author = row.original as Author;
 
+  const [openAuthorDialog, setOpenAuthorDialog] = useState(false);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,9 +36,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem
-          onClick={() => console.log("Opening books of", author.name)}
-        >
+        <DropdownMenuItem onClick={() => setOpenAuthorDialog(true)}>
           Open
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => console.log("Updating", author.name)}>
@@ -45,6 +47,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
+      <AuthorDialog
+        open={openAuthorDialog}
+        onOpenChange={setOpenAuthorDialog}
+        author={author}
+      />
     </DropdownMenu>
   );
 }
