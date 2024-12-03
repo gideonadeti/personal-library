@@ -284,3 +284,22 @@ export async function deleteAuthor(userId: string, authorId: string) {
     throw err;
   }
 }
+
+export async function updateGenre(
+  userId: string,
+  genreId: string,
+  name: string
+) {
+  try {
+    const res = await axios.put(`/genres/${genreId}`, {
+      userId,
+      name,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error updating genre:", err);
+
+    throw err;
+  }
+}

@@ -5,6 +5,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import GenreDialog from "../../genre-dialog";
+import CreateGenre from "../../create-genre";
 import { Button } from "@/components/ui/button";
 import { Genre } from "@/app/types";
 import {
@@ -23,6 +24,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
   const genre = row.original as Genre;
 
   const [openGenreDialog, setOpenGenreDialog] = useState(false);
+  const [openUpdateGenre, setOpenUpdateGenre] = useState(false);
 
   return (
     <DropdownMenu>
@@ -39,7 +41,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         <DropdownMenuItem onClick={() => setOpenGenreDialog(true)}>
           Open
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => console.log("Updating", genre.name)}>
+        <DropdownMenuItem onClick={() => setOpenUpdateGenre(true)}>
           Update
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -50,6 +52,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
       <GenreDialog
         open={openGenreDialog}
         onOpenChange={setOpenGenreDialog}
+        genre={genre}
+      />
+      <CreateGenre
+        open={openUpdateGenre}
+        onOpenChange={setOpenUpdateGenre}
         genre={genre}
       />
     </DropdownMenu>
