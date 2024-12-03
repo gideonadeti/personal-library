@@ -7,8 +7,9 @@ import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createAuthor } from "@/app/utils/query-functions";
+import { createAuthor, updateAuthor } from "@/app/utils/query-functions";
 import { useToast } from "@/hooks/use-toast";
+import { Author } from "../types";
 import {
   Dialog,
   DialogContent,
@@ -31,27 +32,37 @@ const formSchema = z.object({
 export default function CreateAuthor({
   open,
   onOpenChange,
+  author,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  author?: Author;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Author</DialogTitle>
+          <DialogTitle>
+            {author ? "Update Author" : "Create Author"}
+          </DialogTitle>
         </DialogHeader>
-        <CreateAuthorForm />
+        <CreateAuthorForm author={author} onOpenChange={onOpenChange} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function CreateAuthorForm() {
+function CreateAuthorForm({
+  author,
+  onOpenChange,
+}: {
+  author?: Author;
+  onOpenChange: (open: boolean) => void;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: author?.name || "",
     },
   });
   const queryClient = useQueryClient();
@@ -59,7 +70,13 @@ function CreateAuthorForm() {
   const { user } = useUser();
   const { toast } = useToast();
   const { mutate, status } = useMutation<string, AxiosError>({
-    mutationFn: () => createAuthor(user!.id, form.getValues("name")),
+    mutationFn: () => {
+      if (author) {
+        return updateAuthor(user!.id, author.id, form.getValues("name"));
+      } else {
+        return createAuthor(user!.id, form.getValues("name"));
+      }
+    },
     onSuccess: (message) => {
       form.reset({ name: "" });
       queryClient.invalidateQueries({
@@ -69,6 +86,10 @@ function CreateAuthorForm() {
       toast({
         description: message,
       });
+
+      if (author) {
+        onOpenChange(false);
+      }
     },
     onError: (err) => {
       const description =

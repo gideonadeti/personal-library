@@ -5,6 +5,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import AuthorDialog from "../../author-dialog";
+import CreateAuthor from "../../create-author";
 import { Button } from "@/components/ui/button";
 import { Author } from "@/app/types";
 import {
@@ -23,6 +24,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
   const author = row.original as Author;
 
   const [openAuthorDialog, setOpenAuthorDialog] = useState(false);
+  const [openUpdateAuthor, setOpenUpdateAuthor] = useState(false);
 
   return (
     <DropdownMenu>
@@ -39,7 +41,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         <DropdownMenuItem onClick={() => setOpenAuthorDialog(true)}>
           Open
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => console.log("Updating", author.name)}>
+        <DropdownMenuItem onClick={() => setOpenUpdateAuthor(true)}>
           Update
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -50,6 +52,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
       <AuthorDialog
         open={openAuthorDialog}
         onOpenChange={setOpenAuthorDialog}
+        author={author}
+      />
+      <CreateAuthor
+        open={openUpdateAuthor}
+        onOpenChange={setOpenUpdateAuthor}
         author={author}
       />
     </DropdownMenu>

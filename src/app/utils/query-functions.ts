@@ -251,3 +251,22 @@ export async function deleteBook(userId: string, bookId: string) {
     throw err;
   }
 }
+
+export async function updateAuthor(
+  userId: string,
+  authorId: string,
+  name: string
+) {
+  try {
+    const res = await axios.put(`/authors/${authorId}`, {
+      userId,
+      name,
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error updating author:", err);
+
+    throw err;
+  }
+}
