@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import GenreDialog from "../../genre-dialog";
 import CreateGenre from "../../create-genre";
+import DeleteGenre from "../../delete-genre";
 import { Button } from "@/components/ui/button";
 import { Genre } from "@/app/types";
 import {
@@ -25,6 +26,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
 
   const [openGenreDialog, setOpenGenreDialog] = useState(false);
   const [openUpdateGenre, setOpenUpdateGenre] = useState(false);
+  const [openDeleteGenre, setOpenDeleteGenre] = useState(false);
 
   return (
     <DropdownMenu>
@@ -45,7 +47,7 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
           Update
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => console.log("Deleting", genre.name)}>
+        <DropdownMenuItem onClick={() => setOpenDeleteGenre(true)}>
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -58,6 +60,11 @@ export default function RowActions<TData>({ row }: RowActionsProps<TData>) {
         open={openUpdateGenre}
         onOpenChange={setOpenUpdateGenre}
         genre={genre}
+      />
+      <DeleteGenre
+        open={openDeleteGenre}
+        onOpenChange={setOpenDeleteGenre}
+        genreId={genre.id}
       />
     </DropdownMenu>
   );

@@ -303,3 +303,17 @@ export async function updateGenre(
     throw err;
   }
 }
+
+export async function deleteGenre(userId: string, genreId: string) {
+  try {
+    const res = await axios.delete(`/genres/${genreId}`, {
+      params: { userId },
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error deleting genre:", err);
+
+    throw err;
+  }
+}
