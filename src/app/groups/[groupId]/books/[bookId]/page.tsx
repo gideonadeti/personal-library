@@ -7,6 +7,7 @@ import { Star, Plus } from "lucide-react";
 import useBooksData from "@/app/hooks/use-books-data";
 import BookStatus from "@/app/components/book-status";
 import CreateNote from "@/app/components/create-note";
+import BookPageActions from "@/app/components/book-page-actions";
 import { H2, Muted, H4, H3 } from "@/app/components/custom-tags";
 import { Book } from "@/app/types";
 import { Spinner } from "@/components/ui/spinner";
@@ -47,12 +48,18 @@ export default function Page() {
               </>
             )}
             <BookStatus status={book.status} />
+            {book.genres.length > 0 && (
+              <>
+                <Separator orientation="vertical" className="mx-2" />
+                <div className="space-x-2">
+                  {book.genres.map((genre) => (
+                    <Badge key={genre.id}>{genre.name.toLowerCase()}</Badge>
+                  ))}
+                </div>
+              </>
+            )}
             <Separator orientation="vertical" className="mx-2" />
-            <div className="space-x-2">
-              {book.genres.map((genre) => (
-                <Badge key={genre.id}>{genre.name.toLowerCase()}</Badge>
-              ))}
-            </div>
+            <BookPageActions book={book} />
           </div>
           <div>
             <div className="flex items-baseline space-x-2">
