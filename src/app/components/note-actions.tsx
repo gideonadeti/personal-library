@@ -4,6 +4,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 
 import CreateNote from "./create-note";
+import DeleteNote from "./delete-note";
 import { Button } from "@/components/ui/button";
 import { Note } from "@/app/types";
 import {
@@ -16,6 +17,7 @@ import {
 
 export default function NoteActions({ note }: { note: Note }) {
   const [openUpdateNote, setOpenUpdateNote] = useState(false);
+  const [openDeleteNote, setOpenDeleteNote] = useState(false);
 
   return (
     <DropdownMenu>
@@ -33,13 +35,20 @@ export default function NoteActions({ note }: { note: Note }) {
           Update
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setOpenDeleteNote(true)}>
+          Delete
+        </DropdownMenuItem>
       </DropdownMenuContent>
       <CreateNote
         open={openUpdateNote}
         onOpenChange={setOpenUpdateNote}
         bookId={note.bookId}
         note={note}
+      />
+      <DeleteNote
+        open={openDeleteNote}
+        onOpenChange={setOpenDeleteNote}
+        noteId={note.id}
       />
     </DropdownMenu>
   );

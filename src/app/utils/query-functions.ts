@@ -338,3 +338,17 @@ export async function updateNote(
     throw err;
   }
 }
+
+export async function deleteNote(userId: string, noteId: string) {
+  try {
+    const res = await axios.delete(`/notes/${noteId}`, {
+      params: { userId },
+    });
+
+    return res.data.msg;
+  } catch (err) {
+    console.error("Error deleting note:", err);
+
+    throw err;
+  }
+}
