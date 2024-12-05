@@ -8,6 +8,7 @@ import useBooksData from "@/app/hooks/use-books-data";
 import BookStatus from "@/app/components/book-status";
 import CreateNote from "@/app/components/create-note";
 import BookPageActions from "@/app/components/book-page-actions";
+import NoteActions from "@/app/components/note-actions";
 import { H2, Muted, H4, H3 } from "@/app/components/custom-tags";
 import { Book } from "@/app/types";
 import { Spinner } from "@/components/ui/spinner";
@@ -83,7 +84,10 @@ export default function Page() {
                         ? note.content.slice(0, 25) + "..."
                         : note.content}
                     </AccordionTrigger>
-                    <AccordionContent>{note.content}</AccordionContent>
+                    <AccordionContent>
+                      <NoteActions note={note} />
+                      {note.content}
+                    </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>

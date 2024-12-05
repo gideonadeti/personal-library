@@ -6,9 +6,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
-import { createNote } from "@/app/utils/query-functions";
+import { createNote, updateNote } from "@/app/utils/query-functions";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { Note } from "../types";
 import {
   Dialog,
   DialogContent,
@@ -32,33 +33,56 @@ export default function CreateNote({
   open,
   onOpenChange,
   bookId,
+  note,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bookId: string;
+  note?: Note;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Note</DialogTitle>
+          <DialogTitle>{note ? "Update Note" : "Create Note"}</DialogTitle>
         </DialogHeader>
-        <CreateNoteForm bookId={bookId} />
+        <CreateNoteForm
+          bookId={bookId}
+          note={note}
+          onOpenChange={onOpenChange}
+        />
       </DialogContent>
     </Dialog>
   );
 }
 
-function CreateNoteForm({ bookId }: { bookId: string }) {
+function CreateNoteForm({
+  bookId,
+  note,
+  onOpenChange,
+}: {
+  bookId: string;
+  note?: Note;
+  onOpenChange: (open: boolean) => void;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: note?.content || "",
+    },
   });
   const queryClient = useQueryClient();
 
   const { user } = useUser();
   const { toast } = useToast();
   const { mutate, status } = useMutation<string, AxiosError>({
-    mutationFn: () => createNote(user!.id, bookId, form.getValues("content")),
+    mutationFn: () => {
+      if (note) {
+        return updateNote(user!.id, bookId, note.id, form.getValues("content"));
+      } else {
+        return createNote(user!.id, bookId, form.getValues("content"));
+      }
+    },
     onSuccess: (message) => {
       form.reset({ content: "" });
       queryClient.invalidateQueries({
@@ -68,6 +92,10 @@ function CreateNoteForm({ bookId }: { bookId: string }) {
       toast({
         description: message,
       });
+
+      if (note) {
+        onOpenChange(false);
+      }
     },
     onError: (err) => {
       const description =
