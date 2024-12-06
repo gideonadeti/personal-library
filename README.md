@@ -17,6 +17,7 @@
 - Dedicated page for managing favorite books
 - Detailed book views
 - Theme switching
+- AI Agent to assist in various ways including book recommendations
 
 ## Key Technologies
 
