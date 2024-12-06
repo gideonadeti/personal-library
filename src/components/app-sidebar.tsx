@@ -197,7 +197,9 @@ export function AppSidebar() {
           <SidebarGroupLabel>Personal Groups</SidebarGroupLabel>
           <SidebarGroupAction
             title="Create Group"
-            onClick={() => openModal("createGroup")}
+            onClick={() =>
+              openModal("createGroup", { groupId: "", initialName: "" })
+            }
           >
             <Plus />
           </SidebarGroupAction>
