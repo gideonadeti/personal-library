@@ -127,10 +127,10 @@ export function AppSidebar() {
           return genresQuery.data?.length || 0;
         case "All Books":
           return (
-            groupsQuery.data?.find((group) => group.default)?.books.length || 0
+            groupsQuery.data?.find((group) => group.default)?.books?.length || 0
           );
         case "Favorites":
-          return booksQuery.data?.filter((book) => book.favorite).length || 0;
+          return booksQuery.data?.filter((book) => book.favorite)?.length || 0;
         default:
           return 0;
       }
