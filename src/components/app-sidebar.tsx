@@ -10,6 +10,7 @@ import {
   MoreHorizontal,
   BookHeart,
   Library,
+  Bot,
 } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 
@@ -274,6 +275,19 @@ export function AppSidebar() {
           >
             Create Book
           </Button>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <Link href="/ai-agent">
+                  <Button variant="outline" className="w-full h-full rounded">
+                    <Bot />
+                  </Button>
+                </Link>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
 
         {/* Modal Components */}
